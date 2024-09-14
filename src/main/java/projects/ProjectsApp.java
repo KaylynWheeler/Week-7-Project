@@ -13,16 +13,19 @@ import projects.service.ProjectService;
 
 public class ProjectsApp {
 private ProjectService  projectService = new ProjectService();
+private Project curProject;
 private Scanner scanner = new Scanner(System.in);
 public static void main(String[] args) {
-
 new  ProjectsApp().processUserSelections();
 		
 }
 // @formatter:off
 private List<String> operations = List.of(
-		"1) add a project"
+		"1) Add a project",
+		"2) List projects",
+		"3) Select a project"
 );
+
 
 	//@dormatter:on
 
@@ -41,6 +44,14 @@ boolean done = false ;
 			createProject();
 			break;
 			
+		case 2:
+			listProjects();
+			break;
+			
+		case 3:
+			selectProject();
+			break;
+			
 			default:
 				System.out.println("\n" + selection + " is not valid. Try again. ");
 				break;
@@ -55,6 +66,34 @@ boolean done = false ;
 
 }
 	
+private void selectProject() {
+		listProjects();
+		Integer projectId = getIntInput("Enter a project ID to selct a project");
+		
+		curProject=null;
+		
+		curProject=projectService.fetchProjectById(projectId);
+		
+		
+
+         if(Objects.isNull(curProject)) {
+        	 System.out.println("\nYou are not working with a project.");
+         }
+        	 else {
+        		 System.out.println("\nYou are working with project: " + curProject);
+        	 }
+        	 
+         
+}
+private void listProjects() {
+		List<Project> projects = projectService.fetchAllProjects();
+		System.out.println("\nProjects:");
+		
+		projects.forEach(project -> System.out.println("  "
+	  + project.getProjectId() + ": " + project.getProjectName()));
+		
+	}
+
 private boolean exitMenu() {
 	System.out.println("Have a nice day");
 	return true;
